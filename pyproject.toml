@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "youtube-uploader"
+version = "0.1.0"
+description = ""
+authors = ["jony89 <ariel@emath.co.il>"]
+readme = "README.md"
+packages = [{include = "youtube_uploader"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+httplib2 = "^0.31.0"
+google-api-python-client = "^2.187.0"
+google-auth-oauthlib = "^1.2.0"
+google-auth = "^2.45.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
