@@ -46,8 +46,8 @@ RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 CLIENT_SECRETS_FILE = "client_secrets.json"
 
 # This OAuth 2.0 access scope allows an application to upload files to the
-# authenticated user's YouTube channel, but doesn't allow other types of access.
-YOUTUBE_UPLOAD_SCOPE = "https://www.googleapis.com/auth/youtube.upload"
+# authenticated user's YouTube channel and manage playlists.
+YOUTUBE_UPLOAD_SCOPE = "https://www.googleapis.com/auth/youtube"
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
@@ -133,7 +133,39 @@ def initialize_upload(youtube, options):
     media_body=MediaFileUpload(options.file, chunksize=-1, resumable=True)
   )
 
-  resumable_upload(insert_request)
+  video_id = resumable_upload(insert_request)
+  
+  # Add video to playlist if provided
+  if hasattr(options, 'playlist_id') and options.playlist_id:
+    add_video_to_playlist(youtube, video_id, options.playlist_id)
+  
+  return video_id
+
+def add_video_to_playlist(youtube, video_id, playlist_id):
+  """Add an uploaded video to a playlist.
+  
+  Args:
+    youtube: Authorized YouTube API client
+    video_id: ID of the video to add
+    playlist_id: ID of the playlist to add the video to
+  """
+  try:
+    request = youtube.playlistItems().insert(
+      part="snippet",
+      body=dict(
+        snippet=dict(
+          playlistId=playlist_id,
+          resourceId=dict(
+            kind="youtube#video",
+            videoId=video_id
+          )
+        )
+      )
+    )
+    response = request.execute()
+    print("Video '%s' was successfully added to playlist '%s'." % (video_id, playlist_id))
+  except HttpError as e:
+    print("An error occurred when adding video to playlist: %s" % e)
 
 # This method implements an exponential backoff strategy to resume a
 # failed upload.
@@ -148,6 +180,7 @@ def resumable_upload(insert_request):
       if response is not None:
         if 'id' in response:
           print("Video id '%s' was successfully uploaded." % response['id'])
+          return response['id']
         else:
           exit("The upload failed with an unexpected response: %s" % response)
     except HttpError as e:
@@ -183,6 +216,8 @@ if __name__ == '__main__':
     default="")
   parser.add_argument("--privacyStatus", choices=VALID_PRIVACY_STATUSES,
     default=VALID_PRIVACY_STATUSES[0], help="Video privacy status.")
+  parser.add_argument("--playlist-id", help="YouTube playlist ID to add the video to",
+    default="")
   args = parser.parse_args()
 
   if not os.path.exists(args.file):
