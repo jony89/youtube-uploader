@@ -37,6 +37,13 @@ def load_video_metadata(csv_path):
         with open(csv_path, "r", encoding="utf-8") as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
+                description = row["description"]
+
+                if description: 
+                    description = description.replace("[B]", "")
+                    description = description.replace("[/B]", "")
+
+
                 filename = row["filename"]
                 metadata[filename] = {
                     "title": row["title"]
@@ -51,7 +58,7 @@ def load_video_metadata(csv_path):
                     .replace("שאלון 807 -", "")
                     .replace("שאלון 803", "")
                     .strip(),
-                    "description": row["description"],
+                    "description": description,
                     "tags": row["tags"],
                 }
     except FileNotFoundError:
@@ -97,6 +104,19 @@ def batch_upload_videos(folder_path, args, youtube, metadata):
 
     print(f"Found {len(mp4_files)} MP4 file(s) to upload")
     print(f"Interval between uploads: {INTERVAL_BETWEEN_UPLOADS} seconds\n")
+    
+    # Skip files until we reach the start_from file
+    start_index = 0
+    if hasattr(args, 'start_from') and args.start_from:
+        for i, file_path in enumerate(mp4_files):
+            if os.path.basename(file_path) == args.start_from:
+                start_index = i
+                print(f"Starting from file: {args.start_from}\n")
+                break
+        else:
+            print(f"Warning: File '{args.start_from}' not found. Starting from beginning.\n")
+    
+    mp4_files = mp4_files[start_index:]
 
     for index, file_path in enumerate(mp4_files, 1):
         file_name = os.path.basename(file_path)
@@ -154,6 +174,11 @@ if __name__ == "__main__":
         "--playlist-id",
         required=True,
         help="YouTube playlist ID to add uploaded videos to",
+    )
+    parser.add_argument(
+        "--start-from",
+        help="Filename to start uploading from (skips all files before this one)",
+        default="",
     )
 
     args = parser.parse_args()
