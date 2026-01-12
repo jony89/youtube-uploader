@@ -49,6 +49,7 @@ def load_video_metadata(csv_path):
                     "title": row["title"]
                     .replace("שאלון 803 - ", "")
                     .replace("שאלון 804 - ", "")
+                    .replace("שאלון 804, ", "")
                     .replace("שאלון 804 ו 803 - ", "")
                     .replace("שאלון 805 -", "")
                     .replace("שאלון 805 ושאלון 807 - ", "")

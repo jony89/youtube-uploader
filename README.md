@@ -9,5 +9,8 @@ python src/batch_upload.py --folder "C:\path\to\videos" --title "My Video: {file
 # running batch mode
 
 ```bash
-python src\batch_upload.py --folder "D:\Emath_Backup\EmathVOD\Videos\804 MP4" --playlist-id PLYBd_LO9MUWUHPEiqj66zcrvpzxvBmH1g
+python -m src.batch_upload --folder "D:\Emath_Backup\EmathVOD\Videos\804 MP4" --playlist-id PLYBd_LO9MUWUHPEiqj66zcrvpzxvBmH1g --start-from 804_integrals_4_units_class_5_exercise_2.mp4
 ```
+
+
+python -m src.batch_upload --folder "D:\Emath_Backup\EmathVOD\Videos\805 MP4\sound_fixed" --playlist-id PLYBd_LO9MUWUHPEiqj66zcrvpzxvBmH1g --start-from 805_Maarichiot_functions_4_units_exercise_10.mp4
