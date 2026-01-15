@@ -344,7 +344,8 @@ def batch_upload_videos(folder_path, args, youtube, metadata):
             print(f"Description: {args.description}")
             print(f"Keywords: {args.keywords}")
             print(f"Title: {args.title}")
-            continue
+            # continue
+            raise e
 
 
 if __name__ == "__main__":
