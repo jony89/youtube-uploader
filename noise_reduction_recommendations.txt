@@ -1,0 +1,10 @@
+NOISE REDUCTION RECOMMENDATIONS
+============================================================
+
+Video: D:\Emath_Backup\EmathVOD\Videos\806 MP4\sound_fixed_highpass\806_Induction_5_units_class_1_exercise_2.mp4
+
+Recommended FFmpeg filter chain:
+highpass=f=150,afftdn=nr=30:nf=-50:tn=1:om=1:bn=1,afftdn=nr=21:nf=-45:tn=1:om=1,agate=threshold=0.005:ratio=5:attack=0.1:release=500:makeup=2
+
+Full FFmpeg command:
+ffmpeg -i "input.mp4" -af "highpass=f=150,afftdn=nr=30:nf=-50:tn=1:om=1:bn=1,afftdn=nr=21:nf=-45:tn=1:om=1,agate=threshold=0.005:ratio=5:attack=0.1:release=500:makeup=2" -c:v copy -c:a aac -b:a 192k "output.mp4"
