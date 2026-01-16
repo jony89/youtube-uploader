@@ -263,7 +263,7 @@ def batch_upload_videos(folder_path, args, youtube, metadata):
             if frame_path:
                 print(f"  Generating description and keywords from frame...")
                 try:
-                    result = get_image_exercise_text(frame_path)
+                    result = get_image_exercise_text(frame_path, file_metadata["description"])
                     if result and result.get("description"):
                         description = clean_description_for_youtube(result["description"])
                         # Ensure description is not empty

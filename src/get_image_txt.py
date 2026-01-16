@@ -5,9 +5,9 @@ from typing import List, Dict, Union
 from google.genai import Client, types
 
 
-def get_image_exercise_text(image_paths: str, api_key: str = None) -> Dict[str, str]:
+def get_image_exercise_text(image_path: str, image_description: str) -> Dict[str, str]:
     """
-    Extract exercise text, description, and YouTube keywords from image(s) using Google Gemini API.
+    Extract exercise text, description, math topics and YouTube keywords from image(s) using Google Gemini API.
     
     Args:
         image_paths: Single image path (str) or list of image paths
@@ -23,23 +23,22 @@ def get_image_exercise_text(image_paths: str, api_key: str = None) -> Dict[str, 
         ValueError: If API key is not provided and not found in environment
     """
     # Initialize Gemini client
-    if api_key is None:
-        api_key = "AIzaSyDI9p803m6BLuMVeRjWVzInAru_8Yplsoo"
+    api_key = "AIzaSyBrzoLUiDA2ycGfJb2a2Vjp5KX1qxFLlVc"
     
     client = Client(api_key=api_key)
     
     # Normalize input to list
-    if isinstance(image_paths, str):
-        image_paths = [image_paths]
+    if isinstance(image_path, str):
+        image_path = [image_path]
     
     # Validate all files exist
-    for path in image_paths:
+    for path in image_path:
         if not os.path.exists(path):
             raise FileNotFoundError(f"Image file not found: {path}")
     
     # Read images as bytes and create Parts
     image_parts = []
-    for path in image_paths:
+    for path in image_path:
         with open(path, "rb") as image_file:
             image_data = image_file.read()
             # Determine MIME type from file extension
@@ -58,11 +57,12 @@ def get_image_exercise_text(image_paths: str, api_key: str = None) -> Dict[str, 
             image_parts.append(image_part)
     
     # Prepare the prompt
-    prompt = """Please analyze the image(s) and extract:
+    prompt = f"""Please analyze the image(s) and extract:
 1. The complete exercise text (all questions, instructions, and content visible in the image). use only raw text without math latex.
-2. A brief summary of what the exercise is about
+2. A brief summary of what the exercise is about with math topics, names of the formulas used.
 3. YouTube keywords (comma-separated, relevant for search)
 
+{f"Image metadata: {image_description}" if image_description else ""}
 All Text should be in Hebrew. No more than 4500 characters.
 
 Format your response as:
@@ -147,7 +147,7 @@ if __name__ == "__main__":
     image_paths = [path.strip() for path in args.image.split(",")]
     
     try:
-        result = get_image_exercise_text(image_paths, args.api_key)
+        result = get_image_exercise_text(image_paths)
         print("\n" + "="*50)
         print("DESCRIPTION:")
         print("="*50)

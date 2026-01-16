@@ -295,7 +295,7 @@ def plot_analysis(analysis_data, noise_profile, voice_analysis, output_path):
 
 
 def main():
-    video_path = r"D:\Emath_Backup\EmathVOD\Videos\806 MP4\sound_fixed_highpass\806_Induction_5_units_class_1_exercise_2.mp4"
+    video_path = r"D:\Emath_Backup\EmathVOD\Videos\807_MP4\sound_fixed\807_analitit_5_units_class_0_hayashar.mp4"
     
     if not os.path.exists(video_path):
         print(f"Error: Video file not found: {video_path}")

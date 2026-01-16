@@ -14,3 +14,5 @@ python -m src.batch_upload --folder "D:\Emath_Backup\EmathVOD\Videos\804 MP4" --
 
 
 python -m src.batch_upload --folder "D:\Emath_Backup\EmathVOD\Videos\806 MP4\sound_fixed" --playlist-id PLYBd_LO9MUWW2ihsPTpOeaD7nLZdlOX45
+
+python -m src.batch_upload --folder "D:\Emath_Backup\EmathVOD\Videos\804 MP4\sound_fixed" --playlist-id PLYBd_LO9MUWUHPEiqj66zcrvpzxvBmH1g --start-from 804_differntial_caculations_4_units_class_1_exercise_2.mp4
